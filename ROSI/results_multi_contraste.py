@@ -19,7 +19,7 @@ import nibabel as nib
 from rosi.registration.outliers_detection.multi_start import removeBadSlice
 from rosi.registration.outliers_detection.feature import update_features
 from rosi.registration.outliers_detection.outliers import sliceFeature
-from rosi.NiftyMIC.rec_ebner import computeRegErrorNesVor
+from rosi.reconstruction.link_to_reconstruction import computeRegErrorNesVor
 from rosi.registration.intersection import compute_cost_matrix
 
 

@@ -17,6 +17,7 @@ from scipy.ndimage import distance_transform_cdt
 from .sliceObject import SliceObject
 from numba import jit
 
+from typing import Tuple
 
 def apply_gaussian_filtering(listOfSlice: 'list[SliceObject]' ,
                              sigma : float) -> list:
@@ -39,7 +40,7 @@ def apply_gaussian_filtering(listOfSlice: 'list[SliceObject]' ,
     return blurlist
 
 
-def separate_slices_in_stacks(listOfSlice : 'list[SliceObject]') -> (np.array('list[SliceObject]'),np.array('list[SliceObject]')):
+def separate_slices_in_stacks(listOfSlice : 'list[SliceObject]') -> Tuple[np.ndarray, np.ndarray]: #(np.array('list[SliceObject]'),np.array('list[SliceObject]')):
     """
     Separate a list of SliceObject into n list corresponding to n stacks
     """

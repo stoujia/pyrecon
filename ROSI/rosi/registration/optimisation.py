@@ -6,16 +6,18 @@ from .intersection import compute_cost_matrix, update_cost_matrix, compute_cost_
 from .sliceObject import SliceObject
 from numpy.linalg import norm
 
+import numpy as np
+
 
 
 def nelder_mead_optimisation(hyperparameters : dict,
                             listOfSlices : 'list[SliceObject]',
-                            cost_matrix : array,
-                            set_r : array,
-                            set_o : array,
+                            cost_matrix : np.ndarray,
+                            set_r : np.ndarray,
+                            set_o : np.ndarray,
                             Vmx : float,
                             k : int,
-                            ablation : str) -> array(6):
+                            ablation : str) -> np.ndarray: #np.array(6)
     
     """
     The function used to optimise the cost_function. It applied the Nelder-Mead to optimise parameters of one slice. 
@@ -64,12 +66,12 @@ def nelder_mead_optimisation(hyperparameters : dict,
 
 def multi_optimisation(hyperparameters : dict,
                             listOfSlices : 'list[SliceObject]',
-                            cost_matrix : array,
-                            set_o : array,
+                            cost_matrix : np.ndarray,
+                            set_o : np.ndarray,
                             Vmx : float,
                             k : int,
-                            x0 : array,
-                            optimisation) -> array(6):
+                            x0 : np.ndarray,
+                            optimisation) -> np.ndarray:#(6):
     
     """
     The function used to optimise the cost_function in multi-start. It applied the Nelder-Mead algorithm to optimise parameters of one slice. 
@@ -118,14 +120,14 @@ def multi_optimisation(hyperparameters : dict,
 
 
 
-def translation_optimisation(hyperparameters : array(6),
+def translation_optimisation(hyperparameters : np.ndarray, #array(6),
                             listOfSlices : 'list[SliceObject]',
-                            cost_matrix : array,
-                            set_o : array,
+                            cost_matrix : np.ndarray,
+                            set_o : np.ndarray,
                             Vmx : float,
                             k : int,
-                            x0 : array,
-                            optimisation) -> array(6):
+                            x0 : np.ndarray,
+                            optimisation) -> np.ndarray: #array(6):
     
     """
     The function used to optimise the cost_function. It applied the Nelder-Mead to optimise parameters of one slice. 

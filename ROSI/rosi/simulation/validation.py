@@ -20,13 +20,15 @@ from rosi.registration.outliers_detection.outliers import separate_features_in_s
 from rosi.registration.sliceObject import SliceObject
 from nibabel import Nifti1Image
 
+from typing import Tuple
+
 
     
 def tre_indexes(stack_fk : 'list[SliceObject]',
                 stack_fkprime : 'list[SliceObject]',
-                M_fk : np.array,
-                M_fkprime : np.array,
-                rejectedSlices : list) -> (np.array,np.array):
+                M_fk : np.ndarray,
+                M_fkprime : np.ndarray,
+                rejectedSlices : list) -> Tuple[np.ndarray, np.ndarray]: #(np.array,np.array):
     
     """
     Take two volumes, with simulated motion, and compute the common points of the motion corrected volume : ie points  points v and v' from slices k and k' such as M_k(v) = M_k'(v')
@@ -103,10 +105,10 @@ def tre_indexes(stack_fk : 'list[SliceObject]',
 
 
     
-def tre(set_v : np.array,
-        set_vprime : np.array,
+def tre(set_v : np.ndarray,
+        set_vprime : np.ndarray,
         stack_fk : 'list[SliceObject]',
-        stack_fkprime : 'list[SliceObject]') -> np.array:
+        stack_fkprime : 'list[SliceObject]') -> np.ndarray:
 
     """
     Take two volume with simulated motion and compute the TRE for each point v and v' (such as M_k(v)=M_k(v') and mk(v)=mk(v')) of the two volume
@@ -143,13 +145,13 @@ def tre(set_v : np.array,
      
     return set_tre
 
-def slice_tre(set_v : np.array,
-             set_vprime : np.array ,
+def slice_tre(set_v : np.ndarray,
+             set_vprime : np.ndarray ,
              stack_fk : 'list[SliceObject]',
              stack_fkprime : 'list[SliceObject]',
              Features_fk : 'list[sliceFeature]',
              Features_fkprime : 'list[sliceFeature]'
-             ) -> np.array:
+             ) -> np.ndarray:
     
 
     """
@@ -297,7 +299,7 @@ def same_order(listSlice,listnomvt):
 def tre_for_each_slices(NoMotionSlices : 'list[SliceObject]',
                         listOfSlice : 'list[SliceObject]',
                         listFeatures : 'list[sliceFeature]',
-                        transfo : np.array,
+                        transfo : np.ndarray,
                         rejected_slice : list):
     """
     Compute the mean tre for each slices. Results are stored in sliceFeature corresponding to each slice
@@ -333,8 +335,8 @@ def tre_for_each_slices(NoMotionSlices : 'list[SliceObject]',
                slice_tre(set_v,set_vprime,Stacks[fk],Stacks[fkprime],Features[fk],Features[fkprime])
 
 
-def distance_from_mask_edges(image_distance : np.array ,
-                             set_v : np.array) -> np.array:
+def distance_from_mask_edges(image_distance : np.ndarray ,
+                             set_v : np.ndarray) -> np.ndarray:
     """
     Associate each v point with it's chamfer distance from the mask edges.
     """
@@ -349,7 +351,7 @@ def distance_from_mask_edges(image_distance : np.array ,
     return distance
 
     
-def compute_image_distance(mask : Nifti1Image) -> np.array :
+def compute_image_distance(mask : Nifti1Image) -> np.ndarray :
     """
     Compute the chamfer distance map with the border of the mask
     """
@@ -358,7 +360,7 @@ def compute_image_distance(mask : Nifti1Image) -> np.array :
 
     return inv_chamfer_distance        
     
-def cumulative_tre(tre : np.array) :
+def cumulative_tre(tre : np.ndarray) :
     """
     Take the TRE in inputs and return an array of the cumulative tre
     """
@@ -368,7 +370,7 @@ def cumulative_tre(tre : np.array) :
 
     return X,Y
 
-def theorical_misregistered(listOfSlice : 'list[SliceObject]', listFeatures : 'list[sliceFeature]', transfolist : np.array) -> list:
+def theorical_misregistered(listOfSlice : 'list[SliceObject]', listFeatures : 'list[sliceFeature]', transfolist : np.ndarray) -> list:
     """
     Return the set of slices that are theoricaly misregistered, ie, the slice that have a TRE above 1.5
 
@@ -475,7 +477,7 @@ def displaySampling(image,TransfoImages):
     return img_res
 
 
-def computeResidu(br_image : 'list[SliceObject]',hr_image : 'Nifty1image',hr_mask : 'np.array'):
+def computeResidu(br_image : list[SliceObject],hr_image : Nifti1Image,hr_mask : np.ndarray):
     """
     compute residus between one low resolution image (br) and one high resolution image (hr)
 

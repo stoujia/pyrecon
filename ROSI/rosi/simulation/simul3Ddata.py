@@ -13,10 +13,11 @@ from rosi.registration.transformation import rigidMatrix
 from scipy.ndimage import map_coordinates
 import random as rd
 
+from typing import Tuple
 
 def simulate_motion_on_slices(listOfSlice ,
-                              rotation_min_max : np.array(2),
-                              translation_min_max : np.array(2)) -> np.array:
+                              rotation_min_max : np.ndarray, #np.array(2),
+                              translation_min_max : np.ndarray) -> np.ndarray: #np.array(2)) -> np.array:
     """
     The function create mouvement bteween the slices of a 3D mri image
 
@@ -26,6 +27,9 @@ def simulate_motion_on_slices(listOfSlice ,
     Returns
     motion_parameters : the random motion parameters for each slices
     """
+
+    assert rotation_min_max.shape == 2, f"Expected rotation_min_max to be of shape (2), got {rotation_min_max.shape}"
+    assert translation_min_max.shape == 2, f"Expected translation_min_max to be of shape (2), got {translation_min_max.shape}" 
 
     nbSlice = len(listOfSlice)
     rangeAngle = rotation_min_max[1]-rotation_min_max[0]
@@ -74,12 +78,12 @@ def extract_mask(NiftiMask : Nifti1Image) -> Nifti1Image:
    return newMask
 
 def simulateMvt(image : Nifti1Image,
-                AngleMinMax : np.array(2),
-                TransMinMax : np.array(2),
+                AngleMinMax : np.ndarray,  #np.array(2),
+                TransMinMax : np.ndarray, #np.array(2),
                 sub_sampling_index : np.float64,
                 stack_num : int,
                 mask : Nifti1Image,
-                motion : bool = True) -> (Nifti1Image,Nifti1Image,np.array,np.array):
+                motion : bool = True) -> Tuple[Nifti1Image,Nifti1Image,np.ndarray,np.ndarray]:
     """
     The function create 3 orthogonals low resolution volume with from 3D mri image
 

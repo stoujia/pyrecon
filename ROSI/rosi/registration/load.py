@@ -5,7 +5,7 @@ Created on Tue Aug 23 09:20:15 2022
 
 @author: mercier
 """
-
+import nibabel as nib
 from nibabel import Nifti1Image,load
 import numpy as np
 from rosi.reconstruction.link_to_reconstruction import sorted_alphanumeric
@@ -13,6 +13,9 @@ from .sliceObject import SliceObject
 from .tools import distance_from_mask
 from .sliceObject import SliceObject
 import os
+
+from rosi.reconstruction.link_to_reconstruction import where_in_the_stack, which_stack
+from typing import Tuple
 
 def convert2Slices(stack : Nifti1Image,
               mask : Nifti1Image,
@@ -67,7 +70,7 @@ def convert2Slices(stack : Nifti1Image,
 
 
 def loadStack(fileImage : str,
-              fileMask : str) -> (Nifti1Image,Nifti1Image):
+              fileMask : str) -> Tuple[Nifti1Image,Nifti1Image]:
     
     """
     Load stack and mask from files using nibabel library
