@@ -90,6 +90,15 @@ class InputArgparser(object):
         required=True,
     ):
         self._add_argument(dict(locals()))
+
+    def add_types(
+        self,
+        option_string="--types",
+        type=str,
+        default=None,
+        required=True,
+    ):
+        self._add_argument(dict(locals()))
         
     def add_Mask(  #if dHCP, mask is the same for the HR reconstructed
         self,
@@ -184,6 +193,7 @@ if __name__ == '__main__':
     
     input_parser.add_HR1(required=True) #load images
     input_parser.add_HR2(required=True) #load images
+    input_parser.add_types(required=True) #load images
     input_parser.add_Mask(required=True) #load masks
     input_parser.add_Output(required=True) #load simulated transformation
     input_parser.add_Name(required=True)
@@ -192,12 +202,16 @@ if __name__ == '__main__':
     args = input_parser.parse_args()
 
 
-    HRnifti = nib.load(args.hr) #3D isotropic image
+    HRnifti1 = nib.load(args.hr1) #3D isotropic image
+    HRnifti2 = nib.load(args.hr2) #3D isotropic image
+    types = args.types #list of types of images
     Mask = nib.load(args.mask) #mask associated to the image
     binaryMask = extract_mask(Mask) #convert mask to a biniary mask
     #os.mkdir('/home/mercier/Documents/donnee/test/Grand5/')
     output = args.output
-    name = args.name
+    name1 = args.name + "_"+types[0]
+    name2 = args.name + "_"+types[1]
+
     parameters_motion = args.motion
     motion=np.asarray(parameters_motion,dtype=np.float64)
     
@@ -205,80 +219,157 @@ if __name__ == '__main__':
         mkdir(output)
     
     
-    LrAxNifti1,AxMask1,paramAx1,transfoAx1 = simulateMvt(HRnifti,motion,motion,6,'axial',binaryMask.get_fdata(),True)#create an axial volume
-    LrCorNifti1,CorMask1,paramCor1,transfoCor1 = simulateMvt(HRnifti,motion,motion,6,'coronal',binaryMask.get_fdata(),True) #create a coronal volume
-    LrSagNifti1,SagMask1,paramSag1,transfoSag1 = simulateMvt(HRnifti,motion,motion,6,'sagittal',binaryMask.get_fdata(),True)#create a sagittal volume
+    LrAxNifti1,AxMask1,paramAx1,transfoAx1 = simulateMvt(HRnifti1,motion,motion,6,'axial',binaryMask.get_fdata(),True)#create an axial volume
+    LrCorNifti1,CorMask1,paramCor1,transfoCor1 = simulateMvt(HRnifti1,motion,motion,6,'coronal',binaryMask.get_fdata(),True) #create a coronal volume
+    LrSagNifti1,SagMask1,paramSag1,transfoSag1 = simulateMvt(HRnifti1,motion,motion,6,'sagittal',binaryMask.get_fdata(),True)#create a sagittal volume
+
+    LrAxNifti2,AxMask2,paramAx2,transfoAx2 = simulateMvt(HRnifti2,motion,motion,6,'axial',binaryMask.get_fdata(),True)#create an axial volume
+    LrCorNifti2,CorMask2,paramCor2,transfoCor2 = simulateMvt(HRnifti2,motion,motion,6,'coronal',binaryMask.get_fdata(),True) #create a coronal volume
+    LrSagNifti2,SagMask2,paramSag2,transfoSag2 = simulateMvt(HRnifti2,motion,motion,6,'sagittal',binaryMask.get_fdata(),True)#create a sagittal volume
 
     # We want to add the motion from stacks T1w to T2w
+    # 1/ With Motion
     
     
+    ##add noise to data 1
+    sigma1=np.random.uniform()*0.1
+    print(sigma1)
     
-    ##add noise to data
-    sigma=np.random.uniform()*0.1
-    print(sigma)
-    
-    mu=np.mean(LrAxNifti.get_fdata()[AxMask.get_fdata()>0])
-    var=np.var(LrAxNifti.get_fdata()[AxMask.get_fdata()>0])
-    print(mu*sigma)
+    mu=np.mean(LrAxNifti1.get_fdata()[AxMask1.get_fdata()>0])
+    var=np.var(LrAxNifti1.get_fdata()[AxMask1.get_fdata()>0])
+    print(mu*sigma1)
     print(mu,var)
-    data=LrAxNifti.get_fdata()+mu*np.random.normal(0,sigma,LrAxNifti.get_fdata().shape)
-    LrAxNifti=nib.Nifti1Image(data, LrAxNifti.affine)
+    data1=LrAxNifti1.get_fdata()+mu*np.random.normal(0,sigma1,LrAxNifti1.get_fdata().shape)
+    LrAxNifti1=nib.Nifti1Image(data1, LrAxNifti1.affine)
     
-    nib.save(LrAxNifti,output + '/LrAxNifti_' +name +'.nii.gz') #save images, masks, parameters and global transformations
-    nib.save(AxMask,output + '/LrAxNifti_' +name+ '_mask.nii.gz')
-    np.save(output + '/paramAx_' +name+ '.npy',paramAx)
-    np.save(output + '/transfoAx_' +name+ '.npy',transfoAx)
+    nib.save(LrAxNifti1,output + '/LrAxNifti_' +name1 +'.nii.gz') #save images, masks, parameters and global transformations
+    nib.save(AxMask1,output + '/LrAxNifti_' +name1+ '_mask.nii.gz')
+    np.save(output + '/paramAx_' +name1+ '.npy',paramAx1)
+    np.save(output + '/transfoAx_' +name1+ '.npy',transfoAx1)
     
-    mu=np.mean(LrCorNifti.get_fdata()[CorMask.get_fdata()>0])
-    var=np.var(LrCorNifti.get_fdata()[CorMask.get_fdata()>0])
-    print(mu*sigma)
+    mu=np.mean(LrCorNifti1.get_fdata()[CorMask1.get_fdata()>0])
+    var=np.var(LrCorNifti1.get_fdata()[CorMask1.get_fdata()>0])
+    print(mu*sigma1)
     print(mu,var)
-    data=LrCorNifti.get_fdata()+mu*np.random.normal(0,sigma,LrCorNifti.get_fdata().shape)
-    LrCorNifti=nib.Nifti1Image(data, LrCorNifti.affine)
+    data=LrCorNifti1.get_fdata()+mu*np.random.normal(0,sigma1,LrCorNifti1.get_fdata().shape)
+    LrCorNifti1=nib.Nifti1Image(data, LrCorNifti1.affine)
     
-    nib.save(LrCorNifti, output +  '/LrCorNifti_' +name+ '.nii.gz')
-    nib.save(CorMask,output +  '/LrCorNifti_' +name+ '_mask.nii.gz')
-    np.save(output +  '/paramCor_' +name+ '.npy',paramCor)
-    np.save(output +  '/transfoCor_' +name+ '.npy',transfoCor)
+    nib.save(LrCorNifti1, output +  '/LrCorNifti_' +name1+ '.nii.gz')
+    nib.save(CorMask1,output +  '/LrCorNifti_' +name1+ '_mask.nii.gz')
+    np.save(output +  '/paramCor_' +name1+ '.npy',paramCor1)
+    np.save(output +  '/transfoCor_' +name1+ '.npy',transfoCor1)
     
-    mu=np.mean(LrSagNifti.get_fdata()[SagMask.get_fdata()>0])
-    var=np.var(LrSagNifti.get_fdata()[SagMask.get_fdata()>0])
-    print(mu*sigma)
+    mu=np.mean(LrSagNifti1.get_fdata()[SagMask1.get_fdata()>0])
+    var=np.var(LrSagNifti1.get_fdata()[SagMask1.get_fdata()>0])
+    print(mu*sigma1)
     print(mu,var)
-    data=LrSagNifti.get_fdata()+mu*np.random.normal(0,sigma,LrSagNifti.get_fdata().shape)
-    LrSagNifti=nib.Nifti1Image(data, LrSagNifti.affine)
+    data=LrSagNifti1.get_fdata()+mu*np.random.normal(0,sigma1,LrSagNifti1.get_fdata().shape)
+    LrSagNifti1=nib.Nifti1Image(data, LrSagNifti1.affine)
     
-    nib.save(LrSagNifti,output +  '/LrSagNifti_' +name+ '.nii.gz')
-    nib.save(SagMask,output +  '/LrSagNifti_' +name+ '_mask.nii.gz')
-    np.save(output +  '/paramSag_' +name+ '.npy',paramSag)
-    np.save(output +  '/transfoSag_' +name+ '.npy',transfoSag)
+    nib.save(LrSagNifti1,output +  '/LrSagNifti_' +name1+ '.nii.gz')
+    nib.save(SagMask1,output +  '/LrSagNifti_' +name1+ '_mask.nii.gz')
+    np.save(output +  '/paramSag_' +name1+ '.npy',paramSag1)
+    np.save(output +  '/transfoSag_' +name1+ '.npy',transfoSag1)
 
-    LrAxNifti,AxMask,paramAx,transfoAx = simulateMvt(HRnifti,motion,motion,6,'axial',binaryMask.get_fdata(),False)#create an axial volume
-    LrCorNifti,CorMask,paramCor,transfoCor = simulateMvt(HRnifti,motion,motion,6,'coronal',binaryMask.get_fdata(),False) #create a coronal volume
-    LrSagNifti,SagMask,paramSag,transfoSag = simulateMvt(HRnifti,motion,motion,6,'sagittal',binaryMask.get_fdata(),False)#create a sagittal volume
+    ##add noise to data 2
+    sigma2=np.random.uniform()*0.1
+    print(sigma2)
+    
+    mu=np.mean(LrAxNifti2.get_fdata()[AxMask2.get_fdata()>0])
+    var=np.var(LrAxNifti2.get_fdata()[AxMask2.get_fdata()>0])
+    print(mu*sigma2)
+    print(mu,var)
+    data=LrAxNifti2.get_fdata()+mu*np.random.normal(0,sigma2,LrAxNifti2.get_fdata().shape)
+    LrAxNifti2=nib.Nifti1Image(data, LrAxNifti2.affine)
+    
+    nib.save(LrAxNifti2,output + '/LrAxNifti_' +name2 +'.nii.gz') #save images, masks, parameters and global transformations
+    nib.save(AxMask2,output + '/LrAxNifti_' +name2+ '_mask.nii.gz')
+    np.save(output + '/paramAx_' +name2+ '.npy',paramAx2)
+    np.save(output + '/transfoAx_' +name2+ '.npy',transfoAx2)
+    
+    mu=np.mean(LrCorNifti2.get_fdata()[CorMask2.get_fdata()>0])
+    var=np.var(LrCorNifti2.get_fdata()[CorMask2.get_fdata()>0])
+    print(mu*sigma2)
+    print(mu,var)
+    data=LrCorNifti2.get_fdata()+mu*np.random.normal(0,sigma2,LrCorNifti2.get_fdata().shape)
+    LrCorNifti2=nib.Nifti1Image(data, LrCorNifti2.affine)
+    
+    nib.save(LrCorNifti2, output +  '/LrCorNifti_' +name2+ '.nii.gz')
+    nib.save(CorMask2,output +  '/LrCorNifti_' +name2+ '_mask.nii.gz')
+    np.save(output +  '/paramCor_' +name2+ '.npy',paramCor2)
+    np.save(output +  '/transfoCor_' +name2+ '.npy',transfoCor2)
+    
+    mu=np.mean(LrSagNifti2.get_fdata()[SagMask2.get_fdata()>0])
+    var=np.var(LrSagNifti2.get_fdata()[SagMask2.get_fdata()>0])
+    print(mu*sigma2)
+    print(mu,var)
+    data=LrSagNifti2.get_fdata()+mu*np.random.normal(0,sigma2,LrSagNifti2.get_fdata().shape)
+    LrSagNifti2=nib.Nifti1Image(data, LrSagNifti2.affine)
+    
+    nib.save(LrSagNifti2,output +  '/LrSagNifti_' +name2+ '.nii.gz')
+    nib.save(SagMask2,output +  '/LrSagNifti_' +name2+ '_mask.nii.gz')
+    np.save(output +  '/paramSag_' +name2+ '.npy',paramSag2)
+    np.save(output +  '/transfoSag_' +name2+ '.npy',transfoSag2)
 
-    data=LrAxNifti.get_fdata()#+np.random.normal(0,sigma,LrAxNifti.get_fdata().shape)
-    LrAxNifti=nib.Nifti1Image(data, LrAxNifti.affine)
+# 2/ Without Motion, (False at the end of the function simulateMvt)
 
-    nib.save(LrAxNifti,output + '/LrAxNifti_nomvt.nii.gz') #save images, masks, parameters and global transformations
-    nib.save(AxMask,output + '/AxMask_nomvt.nii.gz')
-    np.save(output + '/paramAx_nomvt.npy',paramAx)
-    np.save(output + '/transfoAx_nomvt.npy',transfoAx)
+    LrAxNifti1,AxMask1,paramAx1,transfoAx1 = simulateMvt(HRnifti1,motion,motion,6,'axial',binaryMask.get_fdata(),False)#create an axial volume
+    LrCorNifti1,CorMask1,paramCor1,transfoCor1 = simulateMvt(HRnifti1,motion,motion,6,'coronal',binaryMask.get_fdata(),False) #create a coronal volume
+    LrSagNifti1,SagMask1,paramSag1,transfoSag1 = simulateMvt(HRnifti1,motion,motion,6,'sagittal',binaryMask.get_fdata(),False)#create a sagittal volume
+
+    LrAxNifti2,AxMask2,paramAx2,transfoAx2 = simulateMvt(HRnifti2,motion,motion,6,'axial',binaryMask.get_fdata(),False)#create an axial volume
+    LrCorNifti2,CorMask2,paramCor2,transfoCor2 = simulateMvt(HRnifti2,motion,motion,6,'coronal',binaryMask.get_fdata(),False) #create a coronal volume
+    LrSagNifti2,SagMask2,paramSag2,transfoSag2 = simulateMvt(HRnifti2,motion,motion,6,'sagittal',binaryMask.get_fdata(),False)#create a sagittal volume
+
+# Contrast 1
+    data=LrAxNifti1.get_fdata()#+np.random.normal(0,sigma,LrAxNifti.get_fdata().shape)
+    LrAxNifti1=nib.Nifti1Image(data, LrAxNifti1.affine)
+
+    nib.save(LrAxNifti1,output + '/LrAxNifti_nomvt_' + types[0] + '.nii.gz') #save images, masks, parameters and global transformations
+    nib.save(AxMask1,output + '/AxMask_nomvt_' + types[0] + '.nii.gz')
+    np.save(output + '/paramAx_nomvt_' + types[0] + '.npy',paramAx1)
+    np.save(output + '/transfoAx_nomvt_' + types[0] + '.npy',transfoAx1)
     
-    data=LrCorNifti.get_fdata()#+np.random.normal(0,sigma,LrCorNifti.get_fdata().shape)
-    LrCorNifti=nib.Nifti1Image(data, LrCorNifti.affine)
+    data=LrCorNifti1.get_fdata()#+np.random.normal(0,sigma,LrCorNifti.get_fdata().shape)
+    LrCorNifti1=nib.Nifti1Image(data, LrCorNifti1.affine)
     
-    nib.save(LrCorNifti, output +  '/LrCorNifti_nomvt.nii.gz')
-    nib.save(CorMask,output +  '/CorMask_nomvt.nii.gz')
-    np.save(output +  '/paramCor_nomvt.npy',paramCor)
-    np.save(output +  '/transfoCor_nomvt.npy',transfoCor)
+    nib.save(LrCorNifti1, output +  '/LrCorNifti_nomvt_' + types[0] + '.nii.gz')
+    nib.save(CorMask1,output +  '/CorMask_nomvt_' + types[0] + '.nii.gz')
+    np.save(output +  '/paramCor_nomvt_' + types[0] + '.npy',paramCor1)
+    np.save(output +  '/transfoCor_nomvt_' + types[0] + '.npy',transfoCor1)
     
-    data=LrSagNifti.get_fdata()#+np.random.normal(0,sigma,LrSagNifti.get_fdata().shape)
-    LrSagNifti=nib.Nifti1Image(data, LrSagNifti.affine)
+    data=LrSagNifti1.get_fdata()#+np.random.normal(0,sigma,LrSagNifti.get_fdata().shape)
+    LrSagNifti1=nib.Nifti1Image(data, LrSagNifti1.affine)
     
-    nib.save(LrSagNifti,output +  '/LrSagNifti_nomvt.nii.gz')
-    nib.save(SagMask,output +  '/SagMask_nomvt.nii.gz')
-    np.save(output +  '/paramSag_nomvt.npy',paramSag)
-    np.save(output +  '/transfoSag_nomvt.npy',transfoSag)
+    nib.save(LrSagNifti1,output +  '/LrSagNifti_nomvt_' + types[0] + '.nii.gz')
+    nib.save(SagMask1,output +  '/SagMask_nomvt_' + types[0] + '.nii.gz')
+    np.save(output +  '/paramSag_nomvt_' + types[0] + '.npy',paramSag1)
+    np.save(output +  '/transfoSag_nomvt_' + types[0] + '.npy',transfoSag1)
+
+# Contrast 2
+    data=LrAxNifti2.get_fdata()#+np.random.normal(0,sigma,LrAxNifti.get_fdata().shape)
+    LrAxNifti2=nib.Nifti1Image(data, LrAxNifti2.affine)
+
+    nib.save(LrAxNifti2,output + '/LrAxNifti_nomvt_' + types[1] + '.nii.gz') #save images, masks, parameters and global transformations
+    nib.save(AxMask2,output + '/AxMask_nomvt_' + types[1] + '.nii.gz')
+    np.save(output + '/paramAx_nomvt_' + types[1] + '.npy',paramAx2)
+    np.save(output + '/transfoAx_nomvt_' + types[1] + '.npy',transfoAx2)
+    
+    data=LrCorNifti2.get_fdata()#+np.random.normal(0,sigma,LrCorNifti.get_fdata().shape)
+    LrCorNifti2=nib.Nifti1Image(data, LrCorNifti2.affine)
+    
+    nib.save(LrCorNifti2, output +  '/LrCorNifti_nomvt_' + types[1] + '.nii.gz')
+    nib.save(CorMask2,output +  '/CorMask_nomvt_' + types[1] + '.nii.gz')
+    np.save(output +  '/paramCor_nomvt_' + types[1] + '.npy',paramCor2)
+    np.save(output +  '/transfoCor_nomvt_' + types[1] + '.npy',transfoCor2)
+    
+    data=LrSagNifti2.get_fdata()#+np.random.normal(0,sigma,LrSagNifti.get_fdata().shape)
+    LrSagNifti2=nib.Nifti1Image(data, LrSagNifti2.affine)
+    
+    nib.save(LrSagNifti2,output +  '/LrSagNifti_nomvt_' + types[1] + '.nii.gz')
+    nib.save(SagMask2,output +  '/SagMask_nomvt_' + types[1] + '.nii.gz')
+    np.save(output +  '/paramSag_nomvt_' + types[1] + '.npy',paramSag2)
+    np.save(output +  '/transfoSag_nomvt_' + types[1] + '.npy',transfoSag2)
+
 
 
