@@ -130,16 +130,24 @@ class InputArgparser(object):
     ):
         self._add_argument(dict(locals()))
         
-    def add_Motion(
+    def add_Rotation(
         self,
-        option_string="--motion",
+        option_string="--rotation",
         nargs="+",
-        # default=None,
+        default=None,
         required=True,
-        default=[10, 10]
     ):
         self._add_argument(dict(locals()))
 
+    def add_Translation(
+        self,
+        option_string="--translation",
+        nargs="+",
+        default=None,
+        required=True,
+    ):
+        self._add_argument(dict(locals()))
+        
         
     def add_Name(
         self,
@@ -203,7 +211,8 @@ if __name__ == '__main__':
     input_parser.add_Mask(required=True) #load masks
     input_parser.add_Output(required=True) #load simulated transformation
     input_parser.add_Name(required=True)
-    input_parser.add_Motion(required=True)
+    input_parser.add_Rotation(required=True)
+    input_parser.add_Translation(required=True)
     # input_parser.add_stack_Motion(required=False)
     args = input_parser.parse_args()
 
@@ -218,21 +227,22 @@ if __name__ == '__main__':
     name1 = args.name + "_"+types[0]
     name2 = args.name + "_"+types[1]
 
-    parameters_motion = args.motion
-    motion=np.asarray(parameters_motion,dtype=np.float64)
-    print('motion:', motion)
+    parameters_rotation = args.rotation
+    rotation=np.asarray(parameters_rotation,dtype=np.float64)
+    parameters_translation = args.translation
+    translation=np.asarray(parameters_translation,dtype=np.float64)
     
     if not os.path.isdir(output):
         mkdir(output)
     
     
-    LrAxNifti1,AxMask1,paramAx1,transfoAx1 = simulateMvt(HRnifti1,motion,motion,6,'axial',binaryMask.get_fdata(),True)#create an axial volume
-    LrCorNifti1,CorMask1,paramCor1,transfoCor1 = simulateMvt(HRnifti1,motion,motion,6,'coronal',binaryMask.get_fdata(),True) #create a coronal volume
-    LrSagNifti1,SagMask1,paramSag1,transfoSag1 = simulateMvt(HRnifti1,motion,motion,6,'sagittal',binaryMask.get_fdata(),True)#create a sagittal volume
+    LrAxNifti1,AxMask1,paramAx1,transfoAx1 = simulateMvt(HRnifti1,rotation,translation,6,'axial',binaryMask.get_fdata(),True)#create an axial volume
+    LrCorNifti1,CorMask1,paramCor1,transfoCor1 = simulateMvt(HRnifti1,rotation,translation,6,'coronal',binaryMask.get_fdata(),True) #create a coronal volume
+    LrSagNifti1,SagMask1,paramSag1,transfoSag1 = simulateMvt(HRnifti1,rotation,translation,6,'sagittal',binaryMask.get_fdata(),True)#create a sagittal volume
 
-    LrAxNifti2,AxMask2,paramAx2,transfoAx2 = simulateMvt(HRnifti2,motion,motion,6,'axial',binaryMask.get_fdata(),True)#create an axial volume
-    LrCorNifti2,CorMask2,paramCor2,transfoCor2 = simulateMvt(HRnifti2,motion,motion,6,'coronal',binaryMask.get_fdata(),True) #create a coronal volume
-    LrSagNifti2,SagMask2,paramSag2,transfoSag2 = simulateMvt(HRnifti2,motion,motion,6,'sagittal',binaryMask.get_fdata(),True)#create a sagittal volume
+    LrAxNifti2,AxMask2,paramAx2,transfoAx2 = simulateMvt(HRnifti2,rotation,translation,6,'axial',binaryMask.get_fdata(),True)#create an axial volume
+    LrCorNifti2,CorMask2,paramCor2,transfoCor2 = simulateMvt(HRnifti2,rotation,translation,6,'coronal',binaryMask.get_fdata(),True) #create a coronal volume
+    LrSagNifti2,SagMask2,paramSag2,transfoSag2 = simulateMvt(HRnifti2,rotation,translation,6,'sagittal',binaryMask.get_fdata(),True)#create a sagittal volume
 
     # We want to add the motion from stacks T1w to T2w
     # 1/ With Motion
@@ -320,13 +330,13 @@ if __name__ == '__main__':
 
 # 2/ Without Motion, (False at the end of the function simulateMvt)
 
-    LrAxNifti1,AxMask1,paramAx1,transfoAx1 = simulateMvt(HRnifti1,motion,motion,6,'axial',binaryMask.get_fdata(),False)#create an axial volume
-    LrCorNifti1,CorMask1,paramCor1,transfoCor1 = simulateMvt(HRnifti1,motion,motion,6,'coronal',binaryMask.get_fdata(),False) #create a coronal volume
-    LrSagNifti1,SagMask1,paramSag1,transfoSag1 = simulateMvt(HRnifti1,motion,motion,6,'sagittal',binaryMask.get_fdata(),False)#create a sagittal volume
+    LrAxNifti1,AxMask1,paramAx1,transfoAx1 = simulateMvt(HRnifti1,rotation,translation,6,'axial',binaryMask.get_fdata(),False)#create an axial volume
+    LrCorNifti1,CorMask1,paramCor1,transfoCor1 = simulateMvt(HRnifti1,rotation,translation,6,'coronal',binaryMask.get_fdata(),False) #create a coronal volume
+    LrSagNifti1,SagMask1,paramSag1,transfoSag1 = simulateMvt(HRnifti1,rotation,translation,6,'sagittal',binaryMask.get_fdata(),False)#create a sagittal volume
 
-    LrAxNifti2,AxMask2,paramAx2,transfoAx2 = simulateMvt(HRnifti2,motion,motion,6,'axial',binaryMask.get_fdata(),False)#create an axial volume
-    LrCorNifti2,CorMask2,paramCor2,transfoCor2 = simulateMvt(HRnifti2,motion,motion,6,'coronal',binaryMask.get_fdata(),False) #create a coronal volume
-    LrSagNifti2,SagMask2,paramSag2,transfoSag2 = simulateMvt(HRnifti2,motion,motion,6,'sagittal',binaryMask.get_fdata(),False)#create a sagittal volume
+    LrAxNifti2,AxMask2,paramAx2,transfoAx2 = simulateMvt(HRnifti2,rotation,translation,6,'axial',binaryMask.get_fdata(),False)#create an axial volume
+    LrCorNifti2,CorMask2,paramCor2,transfoCor2 = simulateMvt(HRnifti2,rotation,translation,6,'coronal',binaryMask.get_fdata(),False) #create a coronal volume
+    LrSagNifti2,SagMask2,paramSag2,transfoSag2 = simulateMvt(HRnifti2,rotation,translation,6,'sagittal',binaryMask.get_fdata(),False)#create a sagittal volume
 
 # Contrast 1
     data=LrAxNifti1.get_fdata()#+np.random.normal(0,sigma,LrAxNifti.get_fdata().shape)
