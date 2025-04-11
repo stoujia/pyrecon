@@ -5,7 +5,8 @@ Created on Wed Jul 27 17:25:56 2022
 
 @author: mercier
 """
-
+import os
+os.getcwd()
 from rosi.simulation.simul3Ddata import extract_mask,simulateMvt
 import nibabel as nib
 import numpy as np
@@ -159,7 +160,8 @@ class InputArgparser(object):
 
 
 if __name__ == '__main__':
-        
+    
+    print(__name__)
     root=getcwd()
     
     input_parser = InputArgparser()

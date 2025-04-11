@@ -5,15 +5,21 @@ Created on Wed Jul 27 17:25:56 2022
 
 @author: mercier
 """
+import sys
+import os
+# For debug
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 from rosi.simulation.simul3Ddata import extract_mask,simulateMvt
 import nibabel as nib
 import numpy as np
-import os
+
 import argparse
-import sys
+
 from os import getcwd, path, mkdir
 import six
+
+
 
 #script to simulate LR image with motion from an HR image
 
@@ -75,19 +81,21 @@ class InputArgparser(object):
 
     def add_HR1(
         self,
-        option_string="--hr",
+        option_string="--hr1",
         type=str,
-        default=None,
+        # default=None,
         required=True,
+        default="/envau/work/meca/data/dHCP/rel3_dhcp_anat_pipeline/sub-CC00053XX04/ses-8607/anat/sub-CC00053XX04_ses-8607_T1w.nii.gz",
     ):
         self._add_argument(dict(locals()))
 
     def add_HR2(
         self,
-        option_string="--hr",
+        option_string="--hr2",
         type=str,
-        default=None,
+        # default=None,
         required=True,
+        default="/envau/work/meca/data/dHCP/rel3_dhcp_anat_pipeline/sub-CC00053XX04/ses-8607/anat/sub-CC00053XX04_ses-8607_T2w.nii.gz",
     ):
         self._add_argument(dict(locals()))
 
@@ -95,8 +103,10 @@ class InputArgparser(object):
         self,
         option_string="--types",
         type=str,
-        default=None,
+        # default=None,
         required=True,
+        nargs='+',
+        default=["T1w", "T2w"],
     ):
         self._add_argument(dict(locals()))
         
@@ -104,8 +114,9 @@ class InputArgparser(object):
         self,
         option_string="--mask",
         type=str,
-        default=None,
+        # default=None,
         required=True,
+        default="/envau/work/meca/data/dHCP/rel3_dhcp_anat_pipeline/sub-CC00053XX04/ses-8607/anat/sub-CC00053XX04_ses-8607_desc-brain_mask.nii.gz",
     ):
         self._add_argument(dict(locals()))
         
@@ -113,8 +124,9 @@ class InputArgparser(object):
         self,
         option_string="--output",
         type=str,
-        default=None,
+        # default=None,
         required=True,
+        default="/home/INT/jia.s/Bureau/sandbox/multi_simulated/sub-CC00053XX04/ses-8607",
     ):
         self._add_argument(dict(locals()))
         
@@ -122,26 +134,20 @@ class InputArgparser(object):
         self,
         option_string="--motion",
         nargs="+",
-        default=None,
+        # default=None,
         required=True,
+        default=[10, 10]
     ):
         self._add_argument(dict(locals()))
 
-    def add_stack_Motion( # If not added, no motion between the stacks
-        self,
-        option_string="--stack-motion",
-        nargs="+",
-        default=0,
-        required=False,
-    ):
-        self._add_argument(dict(locals()))
         
     def add_Name(
         self,
         option_string="--name",
         type=str,
-        default=None,
+        # default=None,
         required=True,
+        default="multi_10",
     ):
         self._add_argument(dict(locals()))
         
@@ -198,7 +204,7 @@ if __name__ == '__main__':
     input_parser.add_Output(required=True) #load simulated transformation
     input_parser.add_Name(required=True)
     input_parser.add_Motion(required=True)
-    input_parser.add_stack_Motion(required=False)
+    # input_parser.add_stack_Motion(required=False)
     args = input_parser.parse_args()
 
 
@@ -214,6 +220,7 @@ if __name__ == '__main__':
 
     parameters_motion = args.motion
     motion=np.asarray(parameters_motion,dtype=np.float64)
+    print('motion:', motion)
     
     if not os.path.isdir(output):
         mkdir(output)
