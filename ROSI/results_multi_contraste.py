@@ -45,11 +45,11 @@ def error_with_nesvor(dir_stacks,image,dir_motion,dir_nomvt):
 
 #loop on all your data
 #set your variable : path to your directory
-dir_stacks_var = '../../Simulation/simu/'
-dir_motion_tp = '/mnt/Data/Chloe/Resultats/manuscript/nesvor/tres_petit'
-dir_nomvt_tp = '/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/tres_petit'
-dir_motion_other = '/mnt/Data/Chloe/Resultats/manuscript/nesvor/'
-dir_nomvt_other = '/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/'
+dir_stacks_var =  '/envau/work/meca/users/jia.s/chloe_arrival/multi_simulated/sub-CC00053XX04/ses-8607' #'../../Simulation/simu/'
+dir_motion_tp = '' #'/mnt/Data/Chloe/Resultats/manuscript/nesvor/tres_petit'
+dir_nomvt_tp = ''#'/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/tres_petit'
+dir_motion_other = '' #'/mnt/Data/Chloe/Resultats/manuscript/nesvor/'
+dir_nomvt_other = '' #'/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/'
 
 #movement = [trespetit,Petit,Moyen,Grand]
 movment = ["tres_petit","Petit","Moyen","Grand"]
@@ -78,7 +78,7 @@ for m in movment :
                     set_error_before.extend(error_before)
                     set_error_after.extend(error_after)
                 else :
-                    print('this fille does not exists !')
+                    print('this file does not exists !')
     error_before_correction_nesvor.append(set_error_before)
     error_after_correction_nesvor.append(set_error_after)
     i+=1
