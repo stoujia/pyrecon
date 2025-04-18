@@ -22,6 +22,8 @@ from rosi.registration.outliers_detection.outliers import sliceFeature
 from rosi.reconstruction.link_to_reconstruction import computeRegErrorNesVor
 from rosi.registration.intersection import compute_cost_matrix
 
+from steven.merging_folders import merging_folders
+
 
 #function to compute your error
 def error_with_nesvor(dir_stacks,image,dir_motion,dir_nomvt):
@@ -46,39 +48,54 @@ def error_with_nesvor(dir_stacks,image,dir_motion,dir_nomvt):
 #loop on all your data
 #set your variable : path to your directory
 dir_stacks_var =  '/envau/work/meca/users/jia.s/chloe_arrival/multi_simulated/sub-CC00053XX04/ses-8607' #'../../Simulation/simu/'
-dir_motion_tp = '' #'/mnt/Data/Chloe/Resultats/manuscript/nesvor/tres_petit'
-dir_nomvt_tp = ''#'/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/tres_petit'
-dir_motion_other = '' #'/mnt/Data/Chloe/Resultats/manuscript/nesvor/'
-dir_nomvt_other = '' #'/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/'
+dir_motion_tp = '/home/INT/jia.s/Documents/PhD/v4/simu_siren_old' #'/mnt/Data/Chloe/Resultats/manuscript/nesvor/tres_petit'
+dir_nomvt_tp = '/home/INT/jia.s/Documents/PhD/v4/simu_siren_old_nomvt'#'/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/tres_petit'
+dir_motion_other = '/home/INT/jia.s/Documents/PhD/v4/simu_siren_old' #'/mnt/Data/Chloe/Resultats/manuscript/nesvor/'
+dir_nomvt_other = '/home/INT/jia.s/Documents/PhD/v4/simu_siren_old_nomvt' #'/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/'
+
+
+input_folders = [
+    "scannerRef_LrAxNifti_moyen4",
+    "scannerRef_LrCorNifti_moyen4",
+    "scannerRef_LrSagNifti_moyen4"
+]
+
+merging_folders(dir_motion_other, input_folders, "motion_corrected")
+merging_folders(dir_nomvt_other, input_folders, "motion_corrected")
 
 #movement = [trespetit,Petit,Moyen,Grand]
-movment = ["tres_petit","Petit","Moyen","Grand"]
-suffix_image = ["trespetit","petit","moyen","grand"]
+movment = ['Moyen'] #["tres_petit","Petit","Moyen","Grand"]
+suffix_image = ['moyen'] #["trespetit","petit","moyen","grand"]
 error_before_correction_nesvor = []
 error_after_correction_nesvor = []
 i=0
 for m in movment :
     set_error_before = []
     set_error_after = []
-    for index_image in range(1,5) :
-            stack = m + str(index_image)
-            suffix_stack = suffix_image[i] + str(index_image)
-            if True :
-                print(index_image)
-                dir_stacks = dir_stacks_var + stack
-                if m == "tres_petit" :
-                    dir_motion = dir_motion_tp + str(index_image) #+ stack
-                    dir_nomvt =  dir_nomvt_tp + str(index_image) #+ stack
-                else:
-                    dir_motion = dir_motion_other + stack
-                    dir_nomvt = dir_nomvt_other + stack
-                if os.path.exists(dir_motion) and os.path.exists(dir_nomvt):
-                    error_before = error_with_nesvor(dir_stacks,suffix_stack,dir_nomvt,dir_nomvt)
-                    error_after = error_with_nesvor(dir_stacks,suffix_stack,dir_motion,dir_nomvt)
-                    set_error_before.extend(error_before)
-                    set_error_after.extend(error_after)
-                else :
-                    print('this file does not exists !')
+    index_image = 4 # for index_image in range(1,5) :
+#
+    stack = m + str(index_image)
+    suffix_stack = suffix_image[i] + str(index_image)
+    print(index_image)
+    dir_stacks = dir_stacks_var + stack
+    
+    # if m == "tres_petit" :
+    #     dir_motion = dir_motion_tp + str(index_image) #+ stack
+    #     dir_nomvt =  dir_nomvt_tp + str(index_image) #+ stack
+    # else:
+    #     dir_motion = dir_motion_other + stack
+    #     dir_nomvt = dir_nomvt_other + stack
+    dir_motion = os.path.join(dir_motion_tp, "motion_corrected")
+    dir_nomvt = dir_nomvt_tp + str(index_image) 
+
+    if os.path.exists(dir_motion) and os.path.exists(dir_nomvt):
+        error_before = error_with_nesvor(dir_stacks,suffix_stack,dir_nomvt,dir_nomvt)
+        error_after = error_with_nesvor(dir_stacks,suffix_stack,dir_motion,dir_nomvt)
+        set_error_before.extend(error_before)
+        set_error_after.extend(error_after)
+    else :
+        print('this file does not exists !')
+#
     error_before_correction_nesvor.append(set_error_before)
     error_after_correction_nesvor.append(set_error_after)
     i+=1
