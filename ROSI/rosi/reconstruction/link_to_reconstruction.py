@@ -345,7 +345,7 @@ def convert2ListSlice(dir_nomvt,dir_slice,slice_thickness,set_of_affines):
             ##else do nothing
             print('file_name :',file)
 
-            slice_data=nib.load(dir_slice + '/' + file)
+            slice_data=nib.load(os.path.join(dir_slice, file))
             mask_data=nib.load(dir_slice + '/mask_' + file)
             slice_nomvt = nib.load(dir_nomvt + '/' + file)
             mask_slice=nib.load(dir_slice + '/mask_' + file) 

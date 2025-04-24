@@ -7,7 +7,9 @@ Created on Tue Oct 19 13:59:55 2021
 
 
 import numpy as np
-from numpy import concatenate, copy, mean,array, cross, std,ascontiguousarray,float_,equal, abs, shape,nan,logical_or,ones,linspace,sum,isnan,zeros, logical_and
+from numpy import concatenate, copy, mean,array, cross, std,ascontiguousarray,equal, abs, shape,nan,logical_or,ones,linspace,sum,isnan,zeros, logical_and
+# numpy version pb : >2.00
+float_ = np.dtype('float64').type
 from numpy.linalg import norm,inv
 from scipy.ndimage import map_coordinates
 from .tools import line, somme

@@ -6,6 +6,9 @@ Created on Mon Oct 10 11:16:22 2022
 @author: mercier
 
 Script to generate result figures for NeSVoR reconstructions.
+
+To run the script : 
+python -m rosi.simulation.scriptSimulData
 """
 
 import numpy as np
@@ -47,11 +50,13 @@ def error_with_nesvor(dir_stacks,image,dir_motion,dir_nomvt):
 
 #loop on all your data
 #set your variable : path to your directory
-dir_stacks_var =  '/envau/work/meca/users/jia.s/chloe_arrival/multi_simulated/sub-CC00053XX04/ses-8607' #'../../Simulation/simu/'
-dir_motion_tp = '/home/INT/jia.s/Documents/PhD/v4/simu_siren_old' #'/mnt/Data/Chloe/Resultats/manuscript/nesvor/tres_petit'
-dir_nomvt_tp = '/home/INT/jia.s/Documents/PhD/v4/simu_siren_old_nomvt'#'/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/tres_petit'
+dir_stacks_var =  '/envau/work/meca/users/jia.s/chloe_arrival/simu/' #'../../Simulation/simu/'
+dir_motion_tp = '/home/INT/jia.s/Documents/PhD/v4/simu_debug' #'/mnt/Data/Chloe/Resultats/manuscript/nesvor/tres_petit'
+dir_nomvt_tp = '/home/INT/jia.s/Documents/PhD/v4/simu_debug_nomvt'#'/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/tres_petit'
 dir_motion_other = '/home/INT/jia.s/Documents/PhD/v4/simu_siren_old' #'/mnt/Data/Chloe/Resultats/manuscript/nesvor/'
 dir_nomvt_other = '/home/INT/jia.s/Documents/PhD/v4/simu_siren_old_nomvt' #'/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/'
+
+saving_folder = '/home/INT/jia.s/Documents/PhD/v4/simu_siren_old'
 
 
 input_folders = [
@@ -60,8 +65,8 @@ input_folders = [
     "scannerRef_LrSagNifti_moyen4"
 ]
 
-merging_folders(dir_motion_other, input_folders, "motion_corrected")
-merging_folders(dir_nomvt_other, input_folders, "motion_corrected")
+merging_folders(dir_motion_tp, input_folders, "motion_corrected")
+merging_folders(dir_nomvt_tp, input_folders, "motion_corrected")
 
 #movement = [trespetit,Petit,Moyen,Grand]
 movment = ['Moyen'] #["tres_petit","Petit","Moyen","Grand"]
@@ -77,7 +82,7 @@ for m in movment :
     stack = m + str(index_image)
     suffix_stack = suffix_image[i] + str(index_image)
     print(index_image)
-    dir_stacks = dir_stacks_var + stack
+    dir_stacks = os.path.join(dir_stacks_var, stack)
     
     # if m == "tres_petit" :
     #     dir_motion = dir_motion_tp + str(index_image) #+ stack
@@ -86,7 +91,7 @@ for m in movment :
     #     dir_motion = dir_motion_other + stack
     #     dir_nomvt = dir_nomvt_other + stack
     dir_motion = os.path.join(dir_motion_tp, "motion_corrected")
-    dir_nomvt = dir_nomvt_tp + str(index_image) 
+    dir_nomvt = os.path.join(dir_nomvt_tp, "motion_corrected") #+ str(index_image) 
 
     if os.path.exists(dir_motion) and os.path.exists(dir_nomvt):
         error_before = error_with_nesvor(dir_stacks,suffix_stack,dir_nomvt,dir_nomvt)
@@ -109,49 +114,51 @@ fig = plt.figure()
 #axs = fig.add_subplot(111)
 color = ['blue','orange']
 #couleur=['green','red','blue','yellow']  
-motionRange=['small','medium','large','extra-large']     
+# motionRange=['small','medium','large','extra-large']     
+motionRange=['medium']     
 
 cm = plt.cm.get_cmap('tab10')
 cm_skip = [cm.colors[i] for i in range(0,len(cm.colors))]
 
-for index in range(1) :     
-        for mvt in range(0,4):
-            print("motion",mvt)
-            if mvt==0:
-                datalist=np.concatenate(error_after_correction_nesvor[0])
-                before=np.concatenate(error_before_correction_nesvor[0])
-            elif mvt==1:
-                datalist=np.concatenate(error_after_correction_nesvor[1])
-                before=np.concatenate(error_before_correction_nesvor[1])
-            elif mvt==2:
-                datalist=np.concatenate(error_after_correction_nesvor[2])
-                before=np.concatenate(error_before_correction_nesvor[2])
-            else :
-                datalist=np.concatenate(error_after_correction_nesvor[3])
-                before=np.concatenate(error_before_correction_nesvor[3]) 
+# for index in range(1) :     
+# for mvt in range(0,4):
+mvt = 0
+print("motion",mvt)
+if mvt==0:
+    datalist=np.concatenate(error_after_correction_nesvor[0])
+    before=np.concatenate(error_before_correction_nesvor[0])
+elif mvt==1:
+    datalist=np.concatenate(error_after_correction_nesvor[1])
+    before=np.concatenate(error_before_correction_nesvor[1])
+elif mvt==2:
+    datalist=np.concatenate(error_after_correction_nesvor[2])
+    before=np.concatenate(error_before_correction_nesvor[2])
+else :
+    datalist=np.concatenate(error_after_correction_nesvor[3])
+    before=np.concatenate(error_before_correction_nesvor[3]) 
+
+nous_before = np.array(before)
+data = np.array(datalist)
+print(len(nous_before),len(data))
+    
+    #if len(data)==len(nous_before):
         
-            nous_before = np.array(before)
-            data = np.array(datalist)
-            print(len(nous_before),len(data))
-            
-            #if len(data)==len(nous_before):
-                
-            plt.scatter(nous_before[0:min(len(data),len(nous_before))],data[0:min(len(data),len(nous_before))],marker='.',s=170,alpha=0.1,c=cm_skip[mvt])
-            plt.ylabel('after registration',fontsize=30)
-            plt.xlabel('before registration',fontsize=30)
-            #axs[index].set_title(motionRange[mvt],fontsize=15) 
-            plt.ylim(0,16)
-            plt.xlim(0,16)
+plt.scatter(nous_before[0:min(len(data),len(nous_before))],data[0:min(len(data),len(nous_before))],marker='.',s=170,alpha=0.1,c=cm_skip[mvt])
+plt.ylabel('after registration',fontsize=30)
+plt.xlabel('before registration',fontsize=30)
+#axs[index].set_title(motionRange[mvt],fontsize=15) 
+plt.ylim(0,16)
+plt.xlim(0,16)
 
-        #for tick in plt.xaxis.get_majorticklabels():  # example for xaxis
-        #        tick.set_fontsize(15) 
+    #for tick in plt.xaxis.get_majorticklabels():  # example for xaxis
+    #        tick.set_fontsize(15) 
 
-        #for tick in plt.yaxis.get_majorticklabels():  # example for xaxis
-        #        tick.set_fontsize(15) 
+    #for tick in plt.yaxis.get_majorticklabels():  # example for xaxis
+    #        tick.set_fontsize(15) 
 
 
 plt.tight_layout()
 plt.legend(["small","medium","large","extra-large"], fontsize=15, loc ='upper left')
-plt.savefig(fig_name)
+plt.savefig(os.path.join(saving_folder, fig_name))
 
 

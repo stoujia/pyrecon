@@ -16,7 +16,7 @@ from rosi.registration.outliers_detection.feature import update_features, detect
 from rosi.registration.intersection import compute_cost_matrix, compute_cost_from_matrix
 import pickle
 from rosi.registration.outliers_detection.multi_start import correct_slice, removeBadSlice
-from rosi.reconstruction.rec_ebner.py import convert2EbnerParam.py
+from rosi.reconstruction.link_to_reconstruction import convert2EbnerParam
 #import sklearn.externals.joblib
 
 class InputArgparser(object):

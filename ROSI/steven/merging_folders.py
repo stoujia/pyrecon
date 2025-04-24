@@ -1,32 +1,34 @@
 import os
-import shutil
 import glob
-
-# Input folders
+import shutil
 
 def merging_folders(path, input_folders, output_folder):
 
+
+    output_folder = os.path.join(path, output_folder)
     os.makedirs(output_folder, exist_ok=True)
 
-    # Counter for new slice index
     slice_counter = 0
-    output_folder = os.path.join(path, output_folder)
 
     for folder in input_folders:
-        folder= os.path.join(path, folder)
-        image_files = sorted(glob.glob(os.path.join(folder, "*.nii.gz")))
-        
-        # Separate images and masks
-        image_files = [f for f in image_files if not os.path.basename(f).startswith("mask_")]
-        mask_files = [f for f in image_files if "mask_" in os.path.basename(f)]
-        
-        for img_path in image_files:
+        folder = os.path.join(path, folder)
+        all_files = glob.glob(os.path.join(folder, "*.nii.gz"))
+
+        # Separate and sort images and masks
+        image_files = sorted([f for f in all_files if not os.path.basename(f).startswith("mask_")],
+                             key=lambda x: int(os.path.basename(x).split(".")[0]))
+        mask_files = sorted([f for f in all_files if os.path.basename(f).startswith("mask_")],
+                            key=lambda x: int(os.path.basename(x).split("_")[1].split(".")[0]))
+
+        for i, img_path in enumerate(image_files):
             filename = f"{slice_counter}.nii.gz"
             shutil.copy(img_path, os.path.join(output_folder, filename))
+            mask_filename = f"mask_{slice_counter}.nii.gz"
+            shutil.copy(mask_files[i], os.path.join(output_folder, mask_filename))
             slice_counter += 1
-        
-        for mask_path in mask_files:
-            filename = f"mask_{slice_counter - len(mask_files) + mask_files.index(mask_path)}.nii.gz"
-            shutil.copy(mask_path, os.path.join(output_folder, filename))
+
+        # for i, mask_path in enumerate(mask_files):
+        #     filename = f"mask_{slice_counter - len(mask_files) + i}.nii.gz"
+        #     shutil.copy(mask_path, os.path.join(output_folder, filename))
 
     print(f"✅ All slices and masks have been merged into '{output_folder}'")
