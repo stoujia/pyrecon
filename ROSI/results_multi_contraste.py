@@ -50,9 +50,12 @@ def error_with_nesvor(dir_stacks,image,dir_motion,dir_nomvt):
 
 #loop on all your data
 #set your variable : path to your directory
-dir_stacks_var =  '/envau/work/meca/users/jia.s/chloe_arrival/simu/' #'../../Simulation/simu/'
-dir_motion_tp = '/home/INT/jia.s/Documents/PhD/v4/simu_debug' #'/mnt/Data/Chloe/Resultats/manuscript/nesvor/tres_petit'
-dir_nomvt_tp = '/home/INT/jia.s/Documents/PhD/v4/simu_debug_nomvt'#'/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/tres_petit'
+dir_stacks_var =  '/home/INT/jia.s/Téléchargements/simu' #'/envau/work/meca/users/jia.s/chloe_arrival/simu/' #'../../Simulation/simu/'
+# dir_motion_tp = '/home/INT/jia.s/Documents/PhD/v4/simu_debug' #'/mnt/Data/Chloe/Resultats/manuscript/nesvor/tres_petit'
+# dir_nomvt_tp = '/home/INT/jia.s/Documents/PhD/v4/simu_debug_nomvt'#'/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/tres_petit'
+dir_motion_tp = '/home/INT/jia.s/Téléchargements/steven/svort'
+dir_nomvt_tp = '/home/INT/jia.s/Téléchargements/steven/svort_nomvt'
+
 dir_motion_other = '/home/INT/jia.s/Documents/PhD/v4/simu_siren_old' #'/mnt/Data/Chloe/Resultats/manuscript/nesvor/'
 dir_nomvt_other = '/home/INT/jia.s/Documents/PhD/v4/simu_siren_old_nomvt' #'/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/'
 
@@ -65,8 +68,8 @@ input_folders = [
     "scannerRef_LrSagNifti_moyen4"
 ]
 
-merging_folders(dir_motion_tp, input_folders, "motion_corrected")
-merging_folders(dir_nomvt_tp, input_folders, "motion_corrected")
+# merging_folders(dir_motion_tp, input_folders, "motion_corrected")
+# merging_folders(dir_nomvt_tp, input_folders, "motion_corrected")
 
 #movement = [trespetit,Petit,Moyen,Grand]
 movment = ['Moyen'] #["tres_petit","Petit","Moyen","Grand"]
@@ -90,8 +93,8 @@ for m in movment :
     # else:
     #     dir_motion = dir_motion_other + stack
     #     dir_nomvt = dir_nomvt_other + stack
-    dir_motion = os.path.join(dir_motion_tp, "motion_corrected")
-    dir_nomvt = os.path.join(dir_nomvt_tp, "motion_corrected") #+ str(index_image) 
+    dir_motion = dir_motion_tp # os.path.join(dir_motion_tp, "motion_corrected")
+    dir_nomvt = dir_nomvt_tp # os.path.join(dir_nomvt_tp, "motion_corrected") #+ str(index_image) 
 
     if os.path.exists(dir_motion) and os.path.exists(dir_nomvt):
         error_before = error_with_nesvor(dir_stacks,suffix_stack,dir_nomvt,dir_nomvt)

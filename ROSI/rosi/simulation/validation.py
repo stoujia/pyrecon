@@ -49,6 +49,11 @@ def tre_indexes(stack_fk : 'list[SliceObject]',
           
             if ((k.get_stackIndex(),k.get_indexSlice()) not in rejectedSlices) and ((kprime.get_stackIndex(),kprime.get_indexSlice()) not in rejectedSlices) :
               
+                print('debug')
+                print('M_fk, indice_Slice')
+                print(M_fk.shape, stack_fk[zk].get_indexSlice())
+                print('M_fkprime, indice_Slice prime')
+                print(M_fkprime.shape, stack_fkprime[zkprime].get_indexSlice())
                 Mk=M_fk[stack_fk[zk].get_indexSlice(),:,:] @ k.get_slice().affine  #equivalent to M_k
                 Mk_prime=M_fkprime[stack_fkprime[zkprime].get_indexSlice(),:,:] @ kprime.get_slice().affine  #equivalent to M_k'
                 resolution=min(min(k.get_slice().header.get_zooms(),kprime.get_slice().header.get_zooms()))
