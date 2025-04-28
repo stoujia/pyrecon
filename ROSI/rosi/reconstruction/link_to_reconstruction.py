@@ -350,6 +350,13 @@ def convert2ListSlice(dir_nomvt,dir_slice,slice_thickness,set_of_affines):
             slice_nomvt = nib.load(dir_nomvt + '/' + file)
             mask_slice=nib.load(dir_slice + '/mask_' + file) 
 
+            # Add a dimension of the slices if shape is (X,X) instead of (X,X,1)
+            if len(slice_data.get_fdata().shape) == 2:
+                slice_data = nib.Nifti1Image(slice_data.get_fdata()[..., np.newaxis], slice_data.affine)
+                mask_data = nib.Nifti1Image(mask_data.get_fdata()[..., np.newaxis], mask_data.affine)
+                slice_nomvt = nib.Nifti1Image(slice_nomvt.get_fdata()[..., np.newaxis], slice_nomvt.affine)
+                mask_slice = nib.Nifti1Image(mask_slice.get_fdata()[..., np.newaxis], mask_slice.affine)
+
             num_stack=which_stack(slice_nomvt.affine,slice_thickness) 
             stack_affine=set_of_affines[num_stack] #determine the stack of the slice
             i_slice=where_in_the_stack(stack_affine,slice_nomvt.affine,num_stack) #determine the slice index
