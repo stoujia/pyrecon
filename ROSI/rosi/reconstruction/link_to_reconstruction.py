@@ -276,7 +276,8 @@ def displayErrorOfRegistration(listSlice,listErrorBefore,listErrorAfter,listColo
 
 def which_stack(affine_matrix,slice_thickness):
     """
-    Function to determine the stack corresponding to a slice, based on its affine matrix and slice thickness.
+    Function to determine the stack corresponding to a slice, based on its affine matrix and slice thickness on the 3rd columns. 
+    ex: first row, stack 0, 2nd row stack 1 and 3rd row stack 2.
     """
     
     resolution = affine_matrix[:,2]
@@ -292,13 +293,13 @@ def which_stack(affine_matrix,slice_thickness):
         print(resolution)
         return -1
 
-def where_in_the_stack(stack_affine,slice_affine,num_stack):
+def where_in_the_stack(stack_affine,slice_affine,num_stack, s3):
     """
     Function to determine the slice index within a stack.
     """
 
     inv_matrice = np.linalg.inv(stack_affine) @ slice_affine
-    index_in_stack = np.int32(np.round(inv_matrice[2,3]))
+    index_in_stack = np.int32(np.round(inv_matrice[2,3]/s3))
 
 
     print('index :',index_in_stack)
@@ -359,7 +360,7 @@ def convert2ListSlice(dir_nomvt,dir_slice,slice_thickness,set_of_affines):
 
             num_stack=which_stack(slice_nomvt.affine,slice_thickness) 
             stack_affine=set_of_affines[num_stack] #determine the stack of the slice
-            i_slice=where_in_the_stack(stack_affine,slice_nomvt.affine,num_stack) #determine the slice index
+            i_slice=where_in_the_stack(stack_affine,slice_nomvt.affine,num_stack, s3=slice_thickness) #determine the slice index
 
             slicei = SliceObject(slice_data,mask_data.get_fdata(),num_stack,i_slice, num_stack)
             slicen = SliceObject(slice_nomvt,mask_slice.get_fdata(),num_stack,i_slice, num_stack)
