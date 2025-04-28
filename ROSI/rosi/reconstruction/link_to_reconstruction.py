@@ -31,7 +31,7 @@ def convert2EbnerParam(joblib,list_prefix,directory):
 
     joblib : result of ROSI (ex : res.joblib.gz)
     list_prefix : name of the LR images (ex : name for the image name.nii.gz)
-    /!\ elements in list_prefix must be exactly the same than the LR images name 
+    Attention ! elements in list_prefix must be exactly the same than the LR images name 
     directory : output directory (ex : motion_correction)
     
     """
