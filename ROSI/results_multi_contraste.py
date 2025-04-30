@@ -51,8 +51,8 @@ def error_with_nesvor(dir_stacks,image,dir_motion,dir_nomvt):
 #loop on all your data
 #set your variable : path to your directory
 dir_stacks_var =  '/home/INT/jia.s/Téléchargements/simu' #'/envau/work/meca/users/jia.s/chloe_arrival/simu/' #'../../Simulation/simu/'
-dir_motion_tp = '/home/INT/jia.s/Documents/PhD/v4/simu_debug' #'/mnt/Data/Chloe/Resultats/manuscript/nesvor/tres_petit'
-dir_nomvt_tp = '/home/INT/jia.s/Documents/PhD/v4/simu_debug_nomvt'#'/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/tres_petit'
+dir_motion_tp = '/home/INT/jia.s/Documents/PhD/v4/simu_siren_transfo' #'/mnt/Data/Chloe/Resultats/manuscript/nesvor/tres_petit'
+dir_nomvt_tp = '/home/INT/jia.s/Documents/PhD/v4/simu_siren_transfo_nomvt'#'/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/tres_petit'
 # Test with Chloe's data
 # # dir_motion_tp = '/home/INT/jia.s/Téléchargements/steven/svort'
 # dir_nomvt_tp = '/home/INT/jia.s/Téléchargements/steven/svort_nomvt'
