@@ -59,7 +59,7 @@ def simulate_motion_on_slices(listOfSlice ,
 def psf(x_0,x):  
    
     # #The PSF is a gaussian function
-    FHWM = 1.0 #FHWM is equal to the slice thikness (for ssFSE sequence), 1 in voxel  (cf article Jiang et al.)
+    FHWM = 1.0 #FHWM is equal to the slice thickness (for ssFSE sequence), 1 in voxel  (cf article Jiang et al.)
     sigma = FHWM/(2*np.sqrt((2*np.log(2))))
     res = (1/(sigma*np.sqrt(2*np.pi)))* np.exp((-(x-x_0)**2)/(2*(sigma**2)))
 
@@ -214,7 +214,7 @@ def simulateMvt(image : Nifti1Image,
         #translation matrix, from image center to image corner, in world coordinate
         center_to_corner = np.eye(4); center_to_corner[0:3,3]=center_world[0:3]
 
-        #global transformation, including center translatioon and rigid transformation
+        #global transformation, including center translation and rigid transformation
         theorical_transformations[i,:,:] = center_to_corner @ rigid_matrix @ corner_to_center
         
         #coordinate form LR image are converted into world coordinate

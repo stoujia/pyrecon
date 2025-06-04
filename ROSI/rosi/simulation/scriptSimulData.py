@@ -21,6 +21,7 @@ import six
 #The function 'simulate_mvt' simulates a LR image with inter-slice motion from an HR image.
 #SimulateMVt take as parameters : the original HRImage, range motion for rotation, range motion for translation, upsampling parameters (to choose interslice resolution of LR image), image orientation, binary image corresponding to the mask and a boolean (Set to false if you don't want motion)
 #And return : the LR image, mask of the LR image, parameters of transformation for each slices, rigid transformation for each slices.
+#Parameters of .npy : (a1,a2,a3,t1,t2,t3), rotation and translation parameters around/along respectively x,y,z axis
 
 
 class InputArgparser(object):
