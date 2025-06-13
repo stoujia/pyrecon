@@ -15,7 +15,7 @@ def merging_folders(path, input_folders, output_folder):
         all_files = glob.glob(os.path.join(folder, "*.nii.gz"))
 
         # Separate and sort images and masks
-        image_files = sorted([f for f in all_files if not os.path.basename(f).startswith("mask_")],
+        image_files = sorted([f for f in all_files if not (os.path.basename(f).startswith("mask_") and os.path.basename(f).endswith(".nii.gz"))],
                              key=lambda x: int(os.path.basename(x).split(".")[0]))
         mask_files = sorted([f for f in all_files if os.path.basename(f).startswith("mask_")],
                             key=lambda x: int(os.path.basename(x).split("_")[1].split(".")[0]))
