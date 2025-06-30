@@ -1,0 +1,24 @@
+global:
+  types: ["T1w", "T2w"]
+  categories:
+    tres_petit: 1
+    petit: 3
+    moyen: 5
+    grand: 8
+  n_repeats: 4
+  base_output: /home/INT/jia.s/Bureau/sandbox/multi_simulated
+
+subjects:
+  sub-CC00718XX17_ses-210400:
+    hr_contrasts:
+      contrast1: /envau/work/meca/data/dHCP/rel3_dhcp_anat_pipeline/sub-CC00718XX17/ses-210400/anat/sub-CC00718XX17_ses-210400_desc-restore_T1w.nii.gz
+      contrast2: /envau/work/meca/data/dHCP/rel3_dhcp_anat_pipeline/sub-CC00718XX17/ses-210400/anat/sub-CC00718XX17_ses-210400_desc-restore_T2w.nii.gz
+    mask: /envau/work/meca/data/dHCP/rel3_dhcp_anat_pipeline/sub-CC00718XX17/ses-210400/anat/sub-CC00718XX17_ses-210400_desc-brain_mask.nii.gz
+    age_weeks : 26.71
+
+  sub-CC00689XX22_ses-207400:
+    hr_contrasts:
+      contrast1: /envau/work/meca/data/dHCP/rel3_dhcp_anat_pipeline/sub-CC00689XX22/ses-207400/anat/sub-CC00689XX22_ses-207400_desc-restore_T1w.nii.gz
+      contrast2: /envau/work/meca/data/dHCP/rel3_dhcp_anat_pipeline/sub-CC00689XX22/ses-207400/anat/sub-CC00689XX22_ses-207400_desc-restore_T2w.nii.gz
+    mask: /envau/work/meca/data/dHCP/rel3_dhcp_anat_pipeline/sub-CC00689XX22/ses-207400/anat/sub-CC00689XX22_ses-207400_desc-brain_mask.nii.gz
+    age_weeks: 40

@@ -375,6 +375,16 @@ def cumulative_tre(tre : np.ndarray) :
 
     return X,Y
 
+def prop_cumulative_tre(tre : np.ndarray):
+    """
+    Take the TRE in inputs and return an array of the cumulative tre
+    """
+
+    X, Y = cumulative_tre(tre)
+    Y = np.array(Y)/np.max(Y)
+    auc = np.trapz(Y, x=X)
+    return X,Y, auc
+
 def theorical_misregistered(listOfSlice : 'list[SliceObject]', listFeatures : 'list[sliceFeature]', transfolist : np.ndarray) -> list:
     """
     Return the set of slices that are theoricaly misregistered, ie, the slice that have a TRE above 1.5

@@ -1,34 +1,55 @@
-import subprocess
 import os
+import yaml
+import subprocess
 
-hr1 = "/envau/work/meca/data/dHCP/rel3_dhcp_anat_pipeline/sub-CC00053XX04/ses-8607/anat/sub-CC00053XX04_ses-8607_T1w.nii.gz"
-hr2 = "/envau/work/meca/data/dHCP/rel3_dhcp_anat_pipeline/sub-CC00053XX04/ses-8607/anat/sub-CC00053XX04_ses-8607_T2w.nii.gz"
-types = ["T1w", "T2w"]
-mask = "/envau/work/meca/data/dHCP/rel3_dhcp_anat_pipeline/sub-CC00053XX04/ses-8607/anat/sub-CC00053XX04_ses-8607_desc-brain_mask.nii.gz"
-base_output = "/home/INT/jia.s/Bureau/sandbox/multi_simulated/sub-CC00053XX04/ses-8607/translation_0"
-simu_values = [1, 3, 5, 8, 10, 20, 30, 40, 50, 60, 70]
-n_repeats = 2
+# Load YAML config
+with open("steven/config_simu.yaml", "r") as f:
+    config = yaml.safe_load(f)
 
-for mv in simu_values:
-    for rep in range(1, n_repeats + 1):
-        sim_name = f"multi_motion{mv}_rep{rep}"
-        output_dir = os.path.join(base_output, f"motion_{mv}", f"rep_{rep}")
-        os.makedirs(output_dir, exist_ok=True)
+global_cfg = config["global"]
+subjects = config["subjects"]
 
-        cmd = [
-            "python", "-m", "rosi.simulation.scriptSimulData_multi",
-            "--hr1", hr1,
-            "--hr2", hr2,
-            "--types", *types,
-            "--mask", mask,
-            "--output", output_dir,
-            "--rotation", str(mv), str(mv),
-            "--translation", str(0), str(0),
-            "--name", sim_name
-        ]
+types = global_cfg["types"]
+categories = global_cfg["categories"]
+n_repeats = global_cfg["n_repeats"]
+base_output = global_cfg["base_output"]
 
-        print(f"Launching simulation with rotation={mv}, rep={rep}")
-        try:
-            subprocess.run(cmd, check=True)
-        except subprocess.CalledProcessError as e:
-            print(f"Simulation failed for rotation={mv}, rep={rep} with error:\n{e}")
+for subj_id, subj_info in subjects.items():
+    mask = subj_info["mask"]
+    hr_contrasts = subj_info["hr_contrasts"]
+
+    for category, motion_val in categories.items():
+        for rep in range(1, n_repeats + 1):
+            for t in types:
+                matched_contrast = None
+
+                # Try to find the contrast path that includes the type (e.g., T1w or T2w)
+                for contrast_name, path in hr_contrasts.items():
+                    if t in path:
+                        matched_contrast = path
+                        break
+
+                if matched_contrast is None:
+                    print(f"⚠️  No matching HR contrast for type '{t}' in subject {subj_id}. Skipping...")
+                    continue
+
+                output_dir = os.path.join(base_output, subj_id, f"{category}{rep}", t)
+                os.makedirs(output_dir, exist_ok=True)
+
+                sim_name = f"{t}_{category}{rep}"
+
+                cmd = [
+                    "python", "-m", "rosi.simulation.scriptSimulData",
+                    "--hr", matched_contrast,
+                    "--mask", mask,
+                    "--output", output_dir,
+                    "--name", sim_name,
+                    "--motion", str(-motion_val), str(motion_val)
+                ]
+
+                print(f"🚀 Launching simulation: {sim_name}")
+                try:
+                    print(cmd)
+                    subprocess.run(cmd, check=True)
+                except subprocess.CalledProcessError as e:
+                    print(f"❌ Simulation failed for {sim_name}:\n{e}")
