@@ -36,7 +36,7 @@ for subj_id, subj_info in subjects.items():
                 output_dir = os.path.join(base_output, subj_id, f"{category}{rep}", t)
                 os.makedirs(output_dir, exist_ok=True)
 
-                sim_name = f"{t}_{category}{rep}"
+                sim_name = f"{category}{rep}"
 
                 cmd = [
                     "python", "-m", "rosi.simulation.scriptSimulData",

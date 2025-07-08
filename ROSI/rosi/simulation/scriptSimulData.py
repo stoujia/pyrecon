@@ -240,25 +240,25 @@ if __name__ == '__main__':
     data=LrAxNifti.get_fdata()#+np.random.normal(0,sigma,LrAxNifti.get_fdata().shape)
     LrAxNifti=nib.Nifti1Image(data, LrAxNifti.affine)
 
-    nib.save(LrAxNifti,output + '/LrAxNifti_nomvt.nii.gz') #save images, masks, parameters and global transformations
-    nib.save(AxMask,output + '/AxMask_nomvt.nii.gz')
-    np.save(output + '/paramAx_nomvt.npy',paramAx)
-    np.save(output + '/transfoAx_nomvt.npy',transfoAx)
+    nib.save(LrAxNifti,output + '/LrAxNifti_' +name+ '_nomvt.nii.gz') #save images, masks, parameters and global transformations
+    nib.save(AxMask,output + '/AxMask_' +name+ '_nomvt.nii.gz')
+    np.save(output + '/paramAx_' +name+ '_nomvt.npy',paramAx)
+    np.save(output + '/transfoAx_' +name+ '_nomvt.npy',transfoAx)
     
     data=LrCorNifti.get_fdata()#+np.random.normal(0,sigma,LrCorNifti.get_fdata().shape)
     LrCorNifti=nib.Nifti1Image(data, LrCorNifti.affine)
     
-    nib.save(LrCorNifti, output +  '/LrCorNifti_nomvt.nii.gz')
-    nib.save(CorMask,output +  '/CorMask_nomvt.nii.gz')
-    np.save(output +  '/paramCor_nomvt.npy',paramCor)
-    np.save(output +  '/transfoCor_nomvt.npy',transfoCor)
+    nib.save(LrCorNifti, output +  '/LrCorNifti_' +name+ '_nomvt.nii.gz')
+    nib.save(CorMask,output +  '/CorMask_' +name+ '_nomvt.nii.gz')
+    np.save(output +  '/paramCor_' +name+ '_nomvt.npy',paramCor)
+    np.save(output +  '/transfoCor_' +name+ '_nomvt.npy',transfoCor)
     
     data=LrSagNifti.get_fdata()#+np.random.normal(0,sigma,LrSagNifti.get_fdata().shape)
     LrSagNifti=nib.Nifti1Image(data, LrSagNifti.affine)
     
-    nib.save(LrSagNifti,output +  '/LrSagNifti_nomvt.nii.gz')
-    nib.save(SagMask,output +  '/SagMask_nomvt.nii.gz')
-    np.save(output +  '/paramSag_nomvt.npy',paramSag)
-    np.save(output +  '/transfoSag_nomvt.npy',transfoSag)
+    nib.save(LrSagNifti,output +  '/LrSagNifti_' +name+ '_nomvt.nii.gz')
+    nib.save(SagMask,output +  '/SagMask_' +name+ '_nomvt.nii.gz')
+    np.save(output +  '/paramSag_' +name+ '_nomvt.npy',paramSag)
+    np.save(output +  '/transfoSag_' +name+ '_nomvt.npy',transfoSag)
 
 
