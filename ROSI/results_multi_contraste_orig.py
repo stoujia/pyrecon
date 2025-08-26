@@ -42,7 +42,7 @@ def error_with_nesvor(dir_stacks,image,dir_motion,dir_nomvt):
     slice_thickness=3 #you can change it to your slice tickness if needed -> 3 is the one I used for the simulation
     res = computeRegErrorNesVor(dir_motion,slice_thickness,dir_nomvt,set_of_affines,transfo)
     return res
-
+#Make figures for NeSVoR RTRE results
 #loop on all your data
 #set your variable : path to your directory
 dir_stacks_var = '../../Simulation/simu/'
