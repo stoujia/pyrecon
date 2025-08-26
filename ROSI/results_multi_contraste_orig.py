@@ -45,15 +45,15 @@ def error_with_nesvor(dir_stacks,image,dir_motion,dir_nomvt):
 #Make figures for NeSVoR RTRE results
 #loop on all your data
 #set your variable : path to your directory
-dir_stacks_var = '../../Simulation/simu/'
-dir_motion_tp = '/mnt/Data/Chloe/Resultats/manuscript/nesvor/tres_petit'
-dir_nomvt_tp = '/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/tres_petit'
-dir_motion_other = '/mnt/Data/Chloe/Resultats/manuscript/nesvor/'
-dir_nomvt_other = '/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/'
+dir_stacks_var = '/home/INT/jia.s/Bureau/sandbox/multi_simulated/sub-CC00689XX22_ses-207400/'#'../../Simulation/simu/'
+dir_motion_tp =  '/home/INT/jia.s/Bureau/sandbox/multi_simulated/outgoing/sub-CC00689XX22_ses-207400/tres_petit'#'/mnt/Data/Chloe/Resultats/manuscript/nesvor/tres_petit'
+dir_nomvt_tp = '/home/INT/jia.s/Bureau/sandbox/multi_simulated/outgoing/sub-CC00689XX22_ses-207400/tres_petit' #'/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/tres_petit'
+dir_motion_other = '/home/INT/jia.s/Bureau/sandbox/multi_simulated/outgoing/sub-CC00689XX22_ses-207400/' #'/mnt/Data/Chloe/Resultats/manuscript/nesvor/'
+dir_nomvt_other = '/home/INT/jia.s/Bureau/sandbox/multi_simulated/outgoing/sub-CC00689XX22_ses-207400/' #'/mnt/Data/Chloe/Resultats/manuscript/svort_nomvt/'
 
 #movement = [trespetit,Petit,Moyen,Grand]
-movment = ["tres_petit","Petit","Moyen","Grand"]
-suffix_image = ["trespetit","petit","moyen","grand"]
+movment = ["tres_petit","petit","moyen","grand"]
+# suffix_image = ["trespetit","petit","moyen","grand"]
 error_before_correction_nesvor = []
 error_after_correction_nesvor = []
 i=0
@@ -62,16 +62,19 @@ for m in movment :
     set_error_after = []
     for index_image in range(1,5) :
             stack = m + str(index_image)
-            suffix_stack = suffix_image[i] + str(index_image)
+            suffix_stack = stack
+            # suffix_stack = suffix_image[i] + str(index_image)
             if True :
                 print(index_image)
+                
                 dir_stacks = dir_stacks_var + stack
-                if m == "tres_petit" :
-                    dir_motion = dir_motion_tp + str(index_image) #+ stack
-                    dir_nomvt =  dir_nomvt_tp + str(index_image) #+ stack
-                else:
-                    dir_motion = dir_motion_other + stack
-                    dir_nomvt = dir_nomvt_other + stack
+                # if m == "tres_petit" :
+                #     dir_motion = dir_motion_tp + str(index_image) #+ stack
+                #     dir_nomvt =  dir_nomvt_tp + str(index_image) #+ stack
+                # else:
+                dir_motion = dir_motion_other + stack
+                dir_nomvt = dir_nomvt_other + stack
+
                 if os.path.exists(dir_motion) and os.path.exists(dir_nomvt):
                     error_before = error_with_nesvor(dir_stacks,suffix_stack,dir_nomvt,dir_nomvt)
                     error_after = error_with_nesvor(dir_stacks,suffix_stack,dir_motion,dir_nomvt)
