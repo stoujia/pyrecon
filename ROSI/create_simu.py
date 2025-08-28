@@ -3,7 +3,7 @@ import yaml
 import subprocess
 
 # Load YAML config
-with open("steven/config_simu.yaml", "r") as f:
+with open("steven/config_simu_supp.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 global_cfg = config["global"]
@@ -36,7 +36,7 @@ for subj_id, subj_info in subjects.items():
                 output_dir = os.path.join(base_output, subj_id, f"{category}{rep}", t)
                 os.makedirs(output_dir, exist_ok=True)
 
-                sim_name = f"{category}{rep}"
+                sim_name = f"{t}_{category}{rep}"
 
                 cmd = [
                     "python", "-m", "rosi.simulation.scriptSimulData",
